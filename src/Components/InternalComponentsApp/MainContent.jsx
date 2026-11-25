@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { dataContext } from "../Context/MetricsContext";
-import OverView from "./MenuOptions/overView";
-import NewReceta from "./MenuOptions/newReceta";
+import OverView from "./MenuOptions/OverView";
+import NewReceta from "./MenuOptions/NewReceta";
 import NewCollection from "./MenuOptions/NewCollection";
 import Graphics from "./MenuOptions/Graphics";
 

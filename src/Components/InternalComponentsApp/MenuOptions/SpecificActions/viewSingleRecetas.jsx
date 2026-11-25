@@ -1,6 +1,4 @@
 import { Grid, Container, Stack, Typography, Box, AlertTitle, Alert, FormControlLabel, Checkbox, CircularProgress, Backdrop, Modal, Button, ButtonGroup } from "@mui/material";
-import CardContent from '@mui/material/CardContent';
-import Card from '@mui/material/Card';
 import ButtonComponent from "../../../Button";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Stepper from '@mui/material/Stepper';
@@ -14,7 +12,7 @@ import TabContext from "@mui/lab/TabContext";
 
 
 //import InputComponent from "./InputComponent";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 
 
 const viewSingleRecetas = (props) => {
@@ -43,7 +41,8 @@ const viewSingleRecetas = (props) => {
         <Modal sx={{
             position: 'fixed',
             width: '90%',
-            maxWidth: '100%'
+            maxWidth: '100%',
+            
         }} open={props.open} onClose={props.onClose} BackdropProps={{
             onClick: (e) => e.stopPropagation()
         }}>

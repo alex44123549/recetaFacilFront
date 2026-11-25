@@ -1,7 +1,7 @@
 import LoginUserForm from "./Components/LoginUserForm.jsx";
 import { useContext, useEffect, useMemo } from "react";
 import { dataContext } from "./Components/Context/MetricsContext.jsx";
-import MainMenu from "./Components/InternalComponentsApp/mainMenu.jsx";
+import MainMenu from "./Components/InternalComponentsApp/MainMenu.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";

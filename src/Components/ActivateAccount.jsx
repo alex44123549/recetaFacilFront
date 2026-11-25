@@ -60,7 +60,7 @@ const ActivateAccount = (props) => {
         }
     }, [isInfo]);
     const ActivateLogin = (Event) => {
-       Event.preventDefault();
+        Event.preventDefault();
         /*debugger*/
         if (Token.length < 3) {
             setIsAlert(true);
@@ -76,8 +76,8 @@ const ActivateAccount = (props) => {
             console.log(props.id);
             console.log(Token);
             /*debugger*/
-            setLoadingScreen(true) ;
-            fetch('http://localhost/recetaFacil/RecetaFacil.com/public/Services/loginUser/ActivateAccount', {
+            setLoadingScreen(true);
+            fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Services/loginUser/ActivateAccount`, {
                 method: 'POST',
                 body: formdata
             }).then(response => {

@@ -89,7 +89,7 @@ const NewReceta = () => {
         formData.append('token', localStorage.getItem('barer'));
 
         setReloadData(true);
-        fetch("http://localhost/recetaFacil/RecetaFacil.com/public/Recetas/findAll", {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Recetas/findAll`, {
             method: 'POST',
             body: formData
         })

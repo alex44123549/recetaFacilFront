@@ -90,7 +90,7 @@ const RecoverAccount = (props) => {
             if (!isSendMail) {
                 formdata.append('_email', Email);
             } else {
-             
+
                 formdata.append('_email', Email);
                 formdata.append("redis_token", String(Token));
                 formdata.append("id", String(id));
@@ -98,7 +98,7 @@ const RecoverAccount = (props) => {
                 formdata.append("new_password", PassWord);
             }
             setLoadingScreen(true);
-            fetch(`http://localhost/recetaFacil/RecetaFacil.com/public/Services/loginUser/RecoveryPassword`, {
+            fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Services/loginUser/RecoveryPassword`, {
                 method: 'POST',
                 body: formdata
             }).then(response => {

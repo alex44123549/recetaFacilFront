@@ -49,7 +49,7 @@ const CreateUser = (props) => {
         formdata.append('password', PassWord);
         formdata.append('email', UserMail);
         setLoadingScreen(true);
-        fetch('http://localhost/recetaFacil/RecetaFacil.com/public/Services/loginUser/CreateUser', {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Services/loginUser/CreateUser`, {
             method: 'POST',
             body: formdata
         }).then(response => {
@@ -71,18 +71,18 @@ const CreateUser = (props) => {
             switch (data.statusCode) {
                 case 200:
                     if (data.data.Code === '200') {
-                        
+
                         SetResponseBack(data.data.Message);
-                        localStorage.setItem('tempData',data.data.Data.id);
-                        localStorage.setItem('email',UserMail);
+                        localStorage.setItem('tempData', data.data.Data.id);
+                        localStorage.setItem('email', UserMail);
                         setSuccess(true);
                         props.onClose();
                         if (props.onSuccess) {
 
                             props.onSuccess({
-                                email:data.data.Data.Data,
-                                id:data.data.Data.id
-                            }); 
+                                email: data.data.Data.Data,
+                                id: data.data.Data.id
+                            });
                         }
 
 

@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
 
-// ✅ Fuente Inter (moderna y compacta)
 const fontHref = "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap";
 const link = document.createElement("link");
 link.href = fontHref;

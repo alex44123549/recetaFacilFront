@@ -17,6 +17,8 @@
     "@mui/material": "^7.3.1",
     "@mui/x-data-grid": "^8.11.3",
     "chart.js": "^4.5.0",
+    "csv-parser": "^3.2.0",
+    "csv-writer": "^1.6.0",
     "echarts": "^5.6.0",
     "echarts-for-react": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
@@ -26,7 +28,8 @@
     "react-dom": "^18.2.0",
     "react-plotly.js": "^2.6.0",
     "react-router-dom": "^7.9.1",
-    "recharts": "^3.2.1"
+    "recharts": "^3.2.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

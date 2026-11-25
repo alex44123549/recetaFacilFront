@@ -42,7 +42,7 @@ const NewCollection = () => {
     formData.append('token', localStorage.getItem('barer'));
     formData.append('getAllCollection', true);
     useEffect(() => {
-        fetch("http://localhost/recetaFacil/RecetaFacil.com/public/Recetas/viewAllCollection", {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Recetas/viewAllCollection`, {
             method: 'POST',
             body: formData
         })

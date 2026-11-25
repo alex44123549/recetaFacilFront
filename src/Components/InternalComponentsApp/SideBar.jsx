@@ -24,7 +24,7 @@ const SideBar = () => {
         const formData = new FormData();
         formData.append('mail', correo);
         formData.append('token', localStorage.getItem('barer'));
-        fetch('http://localhost/recetaFacil/RecetaFacil.com/public/Session/Jwt/Logout', {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/recetaFacil/RecetaFacil.com/public/Session/Jwt/Logout`, {
             method: 'POST',
             body: formData
         }).then(response => {
@@ -95,7 +95,7 @@ const SideBar = () => {
                             selected={menuOptions === "dashboard"}
                             sx={{
                                 '&.Mui-selected': {
-                                    bgcolor: '#e3f2fd',   
+                                    bgcolor: '#e3f2fd',
                                     '& .MuiSvgIcon-root': { color: '#1976d2' }
                                 },
                                 '&.Mui-selected:hover': { bgcolor: '#bbdefb' }
@@ -111,7 +111,7 @@ const SideBar = () => {
                             selected={menuOptions === "receta"}
                             sx={{
                                 '&.Mui-selected': {
-                                    bgcolor: '#e3f2fd',   
+                                    bgcolor: '#e3f2fd',
                                     '& .MuiSvgIcon-root': { color: '#1976d2' }
                                 },
                                 '&.Mui-selected:hover': { bgcolor: '#bbdefb' }
@@ -127,7 +127,7 @@ const SideBar = () => {
                             selected={menuOptions === "collection"}
                             sx={{
                                 '&.Mui-selected': {
-                                    bgcolor: '#e3f2fd',   
+                                    bgcolor: '#e3f2fd',
                                     '& .MuiSvgIcon-root': { color: '#1976d2' }
                                 },
                                 '&.Mui-selected:hover': { bgcolor: '#bbdefb' }
@@ -155,7 +155,7 @@ const SideBar = () => {
                             selected={menuOptions === "graficos"}
                             sx={{
                                 '&.Mui-selected': {
-                                    bgcolor: '#e3f2fd',   
+                                    bgcolor: '#e3f2fd',
                                     '& .MuiSvgIcon-root': { color: '#1976d2' }
                                 },
                                 '&.Mui-selected:hover': { bgcolor: '#bbdefb' }

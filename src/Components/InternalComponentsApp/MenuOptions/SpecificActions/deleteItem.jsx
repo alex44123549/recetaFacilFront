@@ -29,7 +29,7 @@ const deleteReceta = (props) => {
         formData.append('id', item);
         formData.append('value', value)
 
-        fetch(`http://localhost/recetaFacil/RecetaFacil.com/public/Recetas${route}`, {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Recetas${route}`, {
             method: 'POST',
             body: formData
         }).then(data => {
