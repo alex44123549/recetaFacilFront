@@ -1,17 +1,36 @@
-import { Box, Typography, Stack, useTheme, useMediaQuery, Card, CardContent, Button, ButtonGroup } from "@mui/material";
+import { Box, Typography, Stack, useTheme, useMediaQuery, Card, CardContent, Skeleton } from "@mui/material";
 import { dataContext } from "../../Context/MetricsContext";
 import { useContext, useState, useEffect } from "react";
 import PruebaECharts from "../Graphics/PruebaEcharts";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import BoxCustom from "../Customed/BoxCustom";
-import { DataGrid } from "@mui/x-data-grid";
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import ViewSingleRecetas from "./SpecificActions/viewSingleRecetas";
 import ChangeRecetaStatus from "./SpecificActions/deleteItem";
 import LinearChart from "../Graphics/LinearCharts";
+import WelcomeBanner from "../Customed/WelcomeBanner";
+import StatCard from "../Customed/StatCard";
+import RecipeCard from "../Customed/RecipeCard";
+import EmptyState from "../Customed/EmptyState";
+
+// Título de cada sección del Inicio, con la fuente de la marca
+const SectionTitle = ({ children }) => (
+  <Typography variant="h5" className="font-marca" sx={{ color: '#1d3b2f', mb: 1.5 }}>{children}</Typography>
+);
+
+// Tarjeta blanca con borde suave que envuelve gráficas y listas
+const PanelCard = ({ children, sx }) => (
+  <Card elevation={0} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, ...sx }}>
+    <CardContent sx={{ height: '100%' }}>{children}</CardContent>
+  </Card>
+);
 
 const OverView = () => {
-  const { openDrawer, setChartData, collectionData, setCollectionData, recetasToday, setToday } = useContext(dataContext);
+  const { openDrawer, setOptions, eChartData, setChartData, collectionData, setCollectionData, recetasToday, setToday } = useContext(dataContext);
+  const [loading, setLoading] = useState(true);
 
   const [todayPercent, setPercent] = useState('');
   const [collectPercent, setCollectPercent] = useState('');
@@ -20,7 +39,6 @@ const OverView = () => {
   const [top_5_recetas, setTop5] = useState([]);
   const [all_week_collections, setCollection] = useState('');
   const [all_week_collections_percent, setWeekCollectionsPercent] = useState('');
-  const [paginationModel, setPagination] = useState({ page: 0, pageSize: 10 });
   const [viewOpenModal, setOpenModal] = useState(false);
   const [viewChangeModal, setChangeModal] = useState(false);
   const [rows, setRows] = useState([]);
@@ -46,30 +64,11 @@ const OverView = () => {
     setChangeModal(true);
   }
 
-  const columns = [
-    { field: "id", headerName: "Identificador", width: 90 },
-    { field: "_nombre", headerName: "Nombre", flex: 1 },
-    { field: "_fecha_registro", headerName: "Fecha", width: 180 },
-    {
-      field: 'acciones',
-      headerName: 'Acciones',
-      width: 220,
-      sortable: false,
-      filterable: false,
-      renderCell: (param) => (
-        <ButtonGroup>
-          <Button variant="outlined" size="small" sx={{ background: '#2b96b6ff', color: 'white' }}
-            startIcon={<RemoveRedEyeIcon sx={{ color: 'white' }} />} onClick={() => handleOpenModal(param.row)}>
-            Ver
-          </Button>
-          <Button variant="contained" size="small" sx={{ background: '#2bb675ff' }}
-            startIcon={<SaveAltIcon />} onClick={() => handleOpenChangeStatusModal(param.row.id)}>
-            Guardar
-          </Button>
-        </ButtonGroup>
-      ),
-    },
-  ];
+  // Si el usuario no tiene recetas, el back manda 0 en vez de una lista
+  const ultimasRecetas = Array.isArray(top_5_recetas) ? top_5_recetas : [];
+  const sinDatosSemana = !eChartData || Object.keys(eChartData).length === 0;
+  const sinDatosEstados = !recipes_per_status || recipes_per_status.length === 0;
+  const irANuevaReceta = () => setOptions('receta');
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -108,7 +107,9 @@ const OverView = () => {
         setTop5(data.data.rf_top_5);
         setWeekCollectionsPercent(data.data.rf_all_week_collections_percent);
         setRecipes_per_status(data.data.rf_recipes_per_status);
-      });
+      })
+      .catch((error) => console.error('Error al cargar el Inicio:', error))
+      .finally(() => setLoading(false));
   }, [update_render]);
 
   return (
@@ -123,78 +124,72 @@ const OverView = () => {
         mt: '64px'
       }}
     >
-      <Box sx={{ p: 1, pb: 1, top: '65px', overflowX: "hidden", height: 'calc(100vh - 100px)' }}>
-        <Typography variant='h6'>Panel</Typography>
-        <Stack direction="column" spacing={2}>
-          <Stack direction={isMobile ? 'column' : 'row'} spacing={2} sx={{ minHeight: 300 }}>
-            <Card sx={{ flex: 2, width: '100%', minHeight: isMobile ? 300 : 450 }}>
-              <CardContent sx={{ height: "100%" }}>
-                <PruebaECharts />
-              </CardContent>
-            </Card>
+      <Box sx={{ p: 1, pb: 4, top: '65px', overflowX: "hidden", height: 'calc(100vh - 100px)' }}>
+        <Stack direction="column" spacing={3}>
+          {/* 1. Bienvenida */}
+          <WelcomeBanner onNuevaReceta={irANuevaReceta} />
+
+          {/* 2. Métricas + gráfica de la semana */}
+          <Stack direction={isMobile ? 'column' : 'row'} spacing={2}>
             <Stack direction="column" spacing={2} sx={{ flex: 1, width: '100%' }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle1">Recetas totales Hoy</Typography>
-                  <Stack direction="row" spacing={0.5} justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4">{recetasToday}</Typography>
-                    <BoxCustom valueA={todayPercent} text={`${todayPercent} % del total`} />
-                  </Stack>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle1">Recetas totales esta Semana</Typography>
-                  <Stack direction="row" spacing={0.5} justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4">{recetas_week}</Typography>
-                    <BoxCustom valueA={recetas_week_percent} text={`${recetas_week_percent} % del total`} />
-                  </Stack>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle1">Colecciones totales hoy</Typography>
-                  <Stack direction="row" spacing={0.5} justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4">{collectionData}</Typography>
-                    <BoxCustom valueA={collectPercent} text={`${collectPercent} % del total`} />
-                  </Stack>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent>
-                  <Typography variant="subtitle1">Colecciones totales esta semana</Typography>
-                  <Stack direction="row" spacing={0.5} justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4">{all_week_collections}</Typography>
-                    <BoxCustom valueA={all_week_collections_percent} text={`${all_week_collections_percent} % del total`} />
-                  </Stack>
-                </CardContent>
-              </Card>
+              <StatCard loading={loading} color="#2bb675" icon={<RestaurantMenuIcon />}
+                title="Recetas hoy" value={recetasToday} percent={todayPercent} />
+              <StatCard loading={loading} color="#2b96b6" icon={<DateRangeIcon />}
+                title="Recetas esta semana" value={recetas_week} percent={recetas_week_percent} />
+              <StatCard loading={loading} color="#f2994a" icon={<LibraryBooksIcon />}
+                title="Colecciones hoy" value={collectionData} percent={collectPercent} />
+              <StatCard loading={loading} color="#9b51e0" icon={<CollectionsBookmarkIcon />}
+                title="Colecciones esta semana" value={all_week_collections} percent={all_week_collections_percent} />
             </Stack>
+            <PanelCard sx={{ flex: 2, width: '100%', minHeight: isMobile ? 300 : 420 }}>
+              {loading ? (
+                <Skeleton variant="rounded" height={380} />
+              ) : sinDatosSemana ? (
+                <EmptyState icon={<ShowChartIcon fontSize="large" />} title="Sin actividad esta semana"
+                  text="Cuando crees recetas, aquí verás cuántas hiciste cada día." />
+              ) : (
+                <PruebaECharts />
+              )}
+            </PanelCard>
           </Stack>
 
-          <Card sx={{ flex: 2, width: '100%', minHeight: isMobile ? 300 : 450 }}>
-            <CardContent sx={{ height: "100%" }}>
-              <LinearChart data={recipes_per_status} />
-            </CardContent>
-          </Card>
-          <Card>
-            <Typography variant="h5" sx={{ textAlign: 'center', mt: 2 }}>Últimas 5 recetas</Typography>
-            <CardContent>
-              <DataGrid
+          {/* 3. Últimas recetas como tarjetas */}
+          <Box>
+            <SectionTitle>Tus últimas recetas</SectionTitle>
+            {loading ? (
+              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+                {[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} variant="rounded" height={170} />)}
+              </Box>
+            ) : ultimasRecetas.length === 0 ? (
+              <PanelCard>
+                <EmptyState icon={<RamenDiningIcon fontSize="large" />} title="Aún no tienes recetas"
+                  text="Crea tu primera receta con los ingredientes que tengas en casa."
+                  actionText="Crear mi primera receta" onAction={irANuevaReceta} />
+              </PanelCard>
+            ) : (
+              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+                {ultimasRecetas.map((receta, index) => (
+                  <RecipeCard key={receta.id} receta={receta} index={index}
+                    onVer={handleOpenModal} onGuardar={handleOpenChangeStatusModal} />
+                ))}
+              </Box>
+            )}
+          </Box>
 
-                rows={top_5_recetas}
-                columns={columns}
-                pagination
-                paginationModel={paginationModel}
-                onPaginationModelChange={setPagination}
-                pageSizeOptions={[5]}
-                disableRowSelectionOnClick
-              />
-            </CardContent>
-          </Card>
+          {/* Gráfica de recetas por estado */}
+          <Box>
+            <SectionTitle>Recetas por estado</SectionTitle>
+            <PanelCard sx={{ minHeight: isMobile ? 300 : 420 }}>
+              {loading ? (
+                <Skeleton variant="rounded" height={380} />
+              ) : sinDatosEstados ? (
+                <EmptyState icon={<ShowChartIcon fontSize="large" />} title="Todavía no hay datos"
+                  text="Aquí verás cuántas recetas tienes guardadas y sin guardar." />
+              ) : (
+                <LinearChart data={recipes_per_status} />
+              )}
+            </PanelCard>
+          </Box>
         </Stack>
       </Box>
       <ViewSingleRecetas row={rows} open={viewOpenModal} onClose={handleCloseModal} />

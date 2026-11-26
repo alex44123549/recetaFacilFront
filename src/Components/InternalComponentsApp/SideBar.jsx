@@ -1,8 +1,10 @@
 import {
     Drawer, List, ListItemIcon, ListItemText,
     Toolbar, Box, ListItemButton,
-    useMediaQuery, useTheme, ListSubheader
+    useMediaQuery, useTheme, ListSubheader,
+    Avatar, Typography, Stack
 } from "@mui/material";
+import { obtenerNombre, obtenerIniciales } from "./js/usuario";
 import HomeIcon from "@mui/icons-material/Home";
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
@@ -79,6 +81,25 @@ const SideBar = () => {
                 }
             }}>
                 <Box sx={{ m: 0, p: 0 }}>
+                    {/* Perfil del usuario */}
+                    <Stack
+                        direction="row"
+                        spacing={1.5}
+                        alignItems="center"
+                        sx={{ px: 2, py: 2, background: 'linear-gradient(120deg, #e3f6ec 0%, #e1f1f7 100%)' }}
+                    >
+                        <Avatar sx={{ bgcolor: '#2bb675', color: '#fff', fontWeight: 700, width: 44, height: 44 }}>
+                            {obtenerIniciales()}
+                        </Avatar>
+                        <Box sx={{ minWidth: 0 }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#1d3b2f', lineHeight: 1.2 }} noWrap>
+                                {obtenerNombre()}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#3d6b58', display: 'block' }} noWrap title={correo || ''}>
+                                {correo}
+                            </Typography>
+                        </Box>
+                    </Stack>
                     <List subheader={
                         <ListSubheader sx={{
                             bgcolor: 'grey.300',

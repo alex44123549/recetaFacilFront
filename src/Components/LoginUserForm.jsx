@@ -212,7 +212,7 @@ const LoginUserForm = () => {
                     }} container spacing={3}>
                         <Grid item >
                             <Stack direction='column' spacing={2}>
-                                <Typography variant="h6">Receta Facil</Typography>
+                                <Typography variant="h4" className="font-marca" sx={{ color: '#1d3b2f', textAlign: 'center' }}>Receta Fácil</Typography>
                                 <InputComponent variant='standard' onChange={InputValidate} label="Correo" type='email' value={UserMail} />
                                 <InputComponent variant='standard' label="Contraseña" onChange={PasswordValidate} value={Password} type={RevealPass ? 'text' : 'password'} />
                                 <FormControlLabel control={<Checkbox checked={RevealPass} onChange={RevealPassCheck} />} label='Mostrar contraseña' />
