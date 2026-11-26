@@ -42,7 +42,7 @@ const AppBarContent = () => {
     return (
         <>
             <AppBar elevation={0} position="fixed" sx={{ p: 0, borderBottom: 'thin solid rgba(156, 156, 156, 0.12)', background: 'rgba(99, 99, 99, 0.12)' }}>
-                <Toolbar sx={{ bgcolor: '#ffffffff' }}>
+                <Toolbar sx={{ bgcolor: '#ffffffff', color: 'text.primary' }}>
                     <IconButton onClick={handleAppBar}>
                         <MenuIcon />
                     </IconButton>
