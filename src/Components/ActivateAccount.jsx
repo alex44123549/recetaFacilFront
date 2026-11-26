@@ -2,7 +2,6 @@ import { Grid, Container, Stack, Typography, Alert, FormControlLabel, Checkbox, 
 import ButtonComponent from "./Button";
 import InputComponent from "./InputComponent";
 import { useState, useEffect } from "react";
-import { Password } from "@mui/icons-material";
 
 
 const ActivateAccount = (props) => {
