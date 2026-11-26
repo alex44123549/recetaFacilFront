@@ -24,7 +24,7 @@ const SideBar = () => {
         const formData = new FormData();
         formData.append('mail', correo);
         formData.append('token', localStorage.getItem('barer'));
-        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/recetaFacil/RecetaFacil.com/public/Session/Jwt/Logout`, {
+        fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Session/Jwt/Logout`, {
             method: 'POST',
             body: formData
         }).then(response => {

@@ -32,7 +32,7 @@ const LoginUserForm = () => {
     const { loginSuccess, setLoginSuccess } = useContext(dataContext);
 
 
-
+    
 
     const handleCloseModal = () => { setOpen(false) }
     const RevealPassCheck = (Event) => {
@@ -97,10 +97,10 @@ const LoginUserForm = () => {
             setIsAlert(false);
             let formdata = new FormData();
 
-            formdata.append('email', UserMail);
-            formdata.append('contrasena', Password);
+            formdata.append('username', UserMail);
+            formdata.append('password', Password);
             setLoadingScreen(true);
-            fetch(`/api/loginUsuario`, {
+            fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Services/loginUser/loginUsuario`, {
                 method: 'POST',
                 body: formdata
             }).then(response => {
@@ -118,23 +118,31 @@ const LoginUserForm = () => {
                 switch (data.statusCode) {
                     case 200:
                         setResponseB(data);
-
+                        if (data.data.Message === 'Correo enviado correctamente') {
+                            setID(data.data.id);
+                            setUserMailB(data.data.email);
                             /*debugger*/;
-                        console.log(data)
-                        setLoginSuccess(true);
-                        //alert(`Vamos a la interfaz principal ${loginSuccess}`);
-                        localStorage.setItem("correo", UserMail);
-                        localStorage.setItem("barer", data.token);
-                        localStorage.setItem("id",data.userData.id)
+                            setOpenRedis(true);
+                            isActivatedUser(true);
+                        } else {
+                            /*debugger*/;
+                            console.log(data)
+                            if (data.data.Code === 200 && data.data.JWT.Code === 200) {
+                                setLoginSuccess(true);
+                                //alert(`Vamos a la interfaz principal ${loginSuccess}`);
+                                localStorage.setItem("correo", UserMail);
+                                localStorage.setItem("barer", data.data.JWT.token);
+                            }
 
+                        }
                         /*debugger*/;
-                        switch (data.ServiceResponse.statusCode) {
+                        switch (data.data.Code) {
                             case 404: setInfo(true); break;
                             case 403: setWarning(true); break;
                             case 200: if (!loginSuccess) {
                                 setSuccess(false);
                                 setError(true);
-                                //setResponseB(data.token);
+                                setResponseB(data.data.JWT.Message);
                                 break;
                             }
                             case 500: setError(true); break;
@@ -153,15 +161,6 @@ const LoginUserForm = () => {
                         break;
                     case 404:
                         setWarning(true);
-                        setResponseB(data);
-                        break;
-                    case 409:
-                        setID(data.payloadUser.id);
-                        setUserMailB(data.payloadUser.email);
-                            /*debugger*/;
-                        setOpenRedis(true);
-                        isActivatedUser(true);
-                        setInfo(true);
                         setResponseB(data);
                         break;
                     default:
@@ -221,9 +220,9 @@ const LoginUserForm = () => {
                                 <ButtonComponent variant='contained' sx={{ bgcolor: '#2bb675ff' }} onClick={CreateAccount} text="Soy Nuevo" />
                                 <ButtonComponent variant='text' onClick={RecoverAccountF} text="Recuperar Cuenta" />
                                 {isAlert && <Alert severity="info">Campos incompletos</Alert>}
-                                {(isInfo) && <Alert severity="info">{response_backend.Message}</Alert>}
-                                {(isWarning) && <Alert severity="warning">{response_backend.Message}</Alert>}
-                                {(isSuccess) && <Alert severity="success">{response_backend.Message}</Alert>}
+                                {(isInfo) && <Alert severity="info">{response_backend.data.Message}</Alert>}
+                                {(isWarning) && <Alert severity="warning">{response_backend.data.Message}</Alert>}
+                                {(isSuccess) && <Alert severity="success">{response_backend.data.Message}</Alert>}
                                 {(isError) && <Alert severity="error">{response_backend?.Message || 'SERVER INTERNAL ERROR'}</Alert>}
                             </Stack>
                         </Grid>

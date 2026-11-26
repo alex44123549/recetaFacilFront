@@ -11,8 +11,8 @@ const LinearChart = (props) => {
 
     if (!props.data || props.data.length === 0) return null;
 
-    const llaves = Object.keys(props.data);
-    const values_ = Object.values(props.data);
+    const llaves = Object.keys(props.data[0]);
+    const values_ = Object.values(props.data[0]);
 
     const option = {
         tooltip: {

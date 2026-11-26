@@ -9,13 +9,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import ViewSingleRecetas from "./SpecificActions/viewSingleRecetas";
 import ChangeRecetaStatus from "./SpecificActions/deleteItem";
 import LinearChart from "../Graphics/LinearCharts";
-import Snackbar from '@mui/material/Snackbar';
-import CircularProgress from '@mui/material/CircularProgress';
-import Alert from '@mui/material/Alert';
-import { useLocation } from "react-router-dom";
 
 const OverView = () => {
-  const {isDataSetObtained,setIsDataSetObtained, isAsyncronousRunning,setAsyncronousRunning,intentosAsync, setIntentosAsync, openDrawer, dataSetExist, setDataSetExist, setChartData, collectionData, setCollectionData, recetasToday, setToday } = useContext(dataContext);
+  const { openDrawer, setChartData, collectionData, setCollectionData, recetasToday, setToday } = useContext(dataContext);
 
   const [todayPercent, setPercent] = useState('');
   const [collectPercent, setCollectPercent] = useState('');
@@ -30,34 +26,12 @@ const OverView = () => {
   const [rows, setRows] = useState([]);
   const [rowsChangeModal, setRowsChangeModal] = useState([]);
   const [recipes_per_status, setRecipes_per_status] = useState([]);
-  const [update_render, setUpdateRender] = useState(false);
-  const [Message, setMessage] = useState('');
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [isAsyncronusRun, setAsyncronusRun] = useState(false);
-  const location = useLocation();
-
-  useEffect(()=>{
-    if(intentosAsync<=2 && isAsyncronousRunning && !isDataSetObtained){
-      //setAsyncronousRunning(true);
-      setSnackBarOpen(true);
-      setMessage("Obteniendo DataSet interno , espere por favor...");
-    }else if(!isAsyncronousRunning && isDataSetObtained) {
-      setMessage('DataSet obtenido correctamente');
-      setIsDataSetObtained(true);
-    }
-  },[location.pathname,isAsyncronousRunning])
-
+  const [update_render,setUpdateRender] = useState(false);
 
   const handleCloseChangeStatusModal = () => {
     setChangeModal(false);
   }
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
 
-    setSnackBarOpen(false);
-  };
 
   const handleOpenModal = (param) => {
     setOpenModal(true);
@@ -107,17 +81,13 @@ const OverView = () => {
     const day = date.getDate();
     const formData = new FormData();
 
-    //formData.append('mail', localStorage.getItem('correo'));
-    //formData.append('token', localStorage.getItem('barer'));
-    formData.append('init_date', `${year}-${month}-${day - 7}`);
+    formData.append('mail', localStorage.getItem('correo'));
+    formData.append('token', localStorage.getItem('barer'));
+    formData.append('date_init', `${year}-${month}-${day - 7}`);
     formData.append('date_end', `${year}-${month}-${day}`);
     formData.append('today', `${year}-${month}-${day}`);
-    formData.append('id_usuario',localStorage.getItem('id'));
-    formData.append('limit', `5`);
 
-   // alert(JSON.stringify(formData))
-
-    fetch(`api/Reports/Home`, {
+    fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/Reports/home`, {
       method: 'POST',
       body: formData
     }).then(res => res.json())
@@ -127,51 +97,19 @@ const OverView = () => {
           localStorage.removeItem("barer");
           window.location.href = '/login';
         }
-        setChartData(data.statusWeek);
-        setCollectionData(data.collections);
-        setToday(data.today);
-        setPercent(data.rf_all_);
-        setRecetasWeek(data.rf_all_Week);
-        setRecetasWeelPercent(data.rf_all_Week_percent);
-        setCollection(data.rf_all_week_collections);
-        setCollectPercent(data.rf_collect_today);
-        setTop5(data.rf_top_5);
-        setWeekCollectionsPercent(data.rf_all_week_collections_percent);
-        setRecipes_per_status(data.rf_recipes_per_status);
+        setChartData(data.data.statusWeek.data);
+        setCollectionData(data.data.collections);
+        setToday(data.data.today);
+        setPercent(data.data.rf_all_);
+        setRecetasWeek(data.data.rf_all_Week);
+        setRecetasWeelPercent(data.data.rf_all_Week_percent);
+        setCollection(data.data.rf_all_week_collections);
+        setCollectPercent(data.data.rf_collect_today);
+        setTop5(data.data.rf_top_5);
+        setWeekCollectionsPercent(data.data.rf_all_week_collections_percent);
+        setRecipes_per_status(data.data.rf_recipes_per_status);
       });
   }, [update_render]);
-
-  useEffect(() => {
-    if (intentosAsync < 2 && !isAsyncronousRunning && !isDataSetObtained) {
-      setAsyncronousRunning(true);
-      setSnackBarOpen(true);
-      setAsyncronusRun(true);
-      setMessage("Obteniendo DataSet interno , espere por favor...");
-      let form = new FormData();
-      form.append('RunTask', true);
-      fetch(`${import.meta.env.VITE_URL_ENVIRONMENT}/asyncronus/loadRecipes`, {
-        method: 'POST',
-        data: form
-      }).then(res => res.json())
-        .then(data => {
-
-          setSnackBarOpen(false);
-          //console.log(data);
-          if (data.statusCode === 200) {
-            setAsyncronusRun(false);
-            setSnackBarOpen(true);
-            setMessage("DataSet Listado correctamente");
-            setIntentosAsync(prev => prev + 1);
-            setAsyncronousRunning(false);
-            setIsDataSetObtained(true);
-          } else {
-            setSnackBarOpen(true);
-            setMessage(`Ocurrio un error al listar las recetas: ${data.Message}`);
-          }
-        });
-    }
-  }, [update_render]);
-
 
   return (
     <Box
@@ -260,73 +198,8 @@ const OverView = () => {
         </Stack>
       </Box>
       <ViewSingleRecetas row={rows} open={viewOpenModal} onClose={handleCloseModal} />
-      <ChangeRecetaStatus title='¿Desea Guardar la receta?' value={'1'} route={'/recetaChangeStatus'} open={viewChangeModal} id={rowsChangeModal} onClose={handleCloseChangeStatusModal} onSuccess={() => setUpdateRender(prev => !prev)} />
-      {(isAsyncronousRunning) ? (
-        <Snackbar
-          ContentProps={{
-            sx: {
-              background: 'transparent',
-              boxShadow: 'none',
-              padding: 0,
-            },
-          }}
-          key="async-snackbar"
-          open={snackBarOpen}
-          onClose={handleClose}
-
-          message={
-            <>
-
-              <Alert
-                severity="info"
-                variant="filled"
-                sx={{ width: '100%' }}
-                icon={
-                  <CircularProgress
-                    size={18}
-                    thickness={5}
-                    sx={{ color: 'white' }}
-                  />
-                }
-              >
-                {String(Message)}
-              </Alert>
-
-            </>
-          }
-
-        />
-
-      ) : (!isAsyncronousRunning && isDataSetObtained) ? (
-        <Snackbar
-          ContentProps={{
-            sx: {
-              background: 'transparent',
-              boxShadow: 'none',
-              padding: 0,
-            },
-          }}
-          key="autohide-snackbar"
-          open={snackBarOpen}
-          autoHideDuration={6000}
-          onClose={handleClose}
-          message={<>
-
-            <Alert
-              severity="success"
-              variant="filled"
-              sx={{ width: '100%' }}
-            >
-              {String(Message)}
-            </Alert>
-
-          </>}
-        />
-      ) : (<Typography>Error</Typography>)}
-
-
+      <ChangeRecetaStatus title='¿Desea Guardar la receta?' value={'1'} route={'/recetaChangeStatus'} open={viewChangeModal} id={rowsChangeModal} onClose={handleCloseChangeStatusModal} onSuccess={()=>setUpdateRender(prev=>!prev)}/>
     </Box>
-
   );
 };
 
