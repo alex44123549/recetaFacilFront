@@ -12,9 +12,15 @@ link.rel = "stylesheet";
 document.head.appendChild(link);
 
 const style = document.createElement("style");
+// Inter para todo, menos lo que lleve la clase "font-marca" (títulos y saludo), que usa Lobster
 style.innerHTML = `
-  * {
+  *:not(.font-marca) {
     font-family: "Inter", sans-serif !important;
+  }
+  .font-marca {
+    font-family: "Lobster", cursive !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.3px;
   }
 `;
 document.head.appendChild(style);
